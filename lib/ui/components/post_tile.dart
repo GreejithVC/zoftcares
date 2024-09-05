@@ -22,7 +22,7 @@ class PostTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PostImage(url: "${postModel.image}.jpeg"),
+          PostImage(url:postModel.image),
           Padding(
             padding: const EdgeInsets.all(10),
             child: Column(

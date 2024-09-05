@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants/app_colors.dart';
 import '../../utils/widgets/shimmer.dart';
 
 class PostImage extends StatelessWidget {
@@ -13,8 +12,6 @@ class PostImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('url');
-    print(url);
     return url != null
         ? CachedNetworkImage(
             fit: BoxFit.fill,

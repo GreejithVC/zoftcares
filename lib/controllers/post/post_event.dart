@@ -1,6 +1,5 @@
 import 'package:zoftcares/constants/enums.dart';
 
-import '../../models/post_model.dart';
 
 abstract class PostEvents {}
 
@@ -13,7 +12,7 @@ class UpdateHomePageStatusEvent extends PostEvents {
 }
 
 class UpdateDataEvent extends PostEvents {
-  final List<PostModel> posts;
+  final int posts;
 
   UpdateDataEvent({required this.posts});
 }

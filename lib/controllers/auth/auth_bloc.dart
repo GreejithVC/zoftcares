@@ -17,31 +17,21 @@ import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvents, AuthStates> {
   AuthBloc() : super(AuthStates(pageState: PageState.initial, version: null)) {
+    on<UpdateAuthStatusEvent>((event, emit) =>
+        emit(AuthStates(pageState: event.pageState, version: state.version)));
+    on<UpdateVersionEvent>((event, emit) =>
+        emit(AuthStates(pageState: state.pageState, version: event.version)));
+    on<LoginEvent>((event, emit) => signIn(event.email, event.password));
+    on<LogoutEvent>((event, emit) => logoutAlertBox());
     _fetchAppVersion();
   }
 
-  String? appVersion;
   Timer? _sessionTimer;
-
-  @override
-  Stream<AuthStates> mapEventToState(AuthEvents event) async* {
-    if (event is LoginEvent) {
-      signIn(event.email, event.password);
-    } else if (event is UpdateAuthStatusEvent) {
-      yield AuthStates(pageState: event.pageState, version: state.version);
-    } else if (event is UpdateVersionEvent) {
-      yield AuthStates(pageState: state.pageState, version: state.version);
-    }
-    // else if (event is LogoutEvent) {
-    //   logoutAlertBox();
-    // }
-  }
 
   Future<void> _fetchAppVersion() async {
     try {
       final response = await AuthService().fetchAppVersion();
-      appVersion = response.data?.version;
-      if (appVersion?.isNotEmpty == true) {
+      if (response.data?.version?.isNotEmpty == true) {
         add(UpdateVersionEvent(version: response.data?.version));
       }
     } catch (e) {}
@@ -90,7 +80,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthStates> {
   }
 
   void _showSessionExpiredNotification() {
-    print(DateTime.now());
+    debugPrint(DateTime.now().toString());
     debugPrint("_showSessionExpiredNotification -- ");
     WidgetUtils.showSnackBar('Your session has expired. Please log in again.');
   }
@@ -101,6 +91,11 @@ class AuthBloc extends Bloc<AuthEvents, AuthStates> {
     }
   }
 
+  logoutAlertBox() {
+    WidgetUtils.showLogoutPopUp(navigatorKey.currentContext!,
+        sBtnFunction: () => signOut());
+  }
+
   Future<void> signOut() async {
     await SharedPreferenceRepository.setToken("");
     loadLoginScreen();
@@ -108,7 +103,6 @@ class AuthBloc extends Bloc<AuthEvents, AuthStates> {
   }
 
   loadLoginScreen() {
-    // intiController();
     Navigator.pushAndRemoveUntil(
         navigatorKey.currentContext!,
         MaterialPageRoute(

@@ -13,16 +13,9 @@ import '../../ui/pages/post_list_screen.dart';
 
 class SplashBloc extends Bloc<SplashEvents, SplashStates> {
   SplashBloc() : super(SplashStates(pageState: PageState.initial)) {
+    on<UpdatePageStatusEvent>(
+        (event, emit) => emit(SplashStates(pageState: event.pageState)));
     startTimer();
-  }
-
-  @override
-  Stream<SplashStates> mapEventToState(SplashEvents event) async* {
-    if (event is StartTimerEvent) {
-      startTimer();
-    } else if (event is UpdatePageStatusEvent) {
-      yield SplashStates(pageState: event.pageState);
-    }
   }
 
   Future<void> startTimer() async {
@@ -46,8 +39,7 @@ class SplashBloc extends Bloc<SplashEvents, SplashStates> {
     }
   }
 
-  loadHomeScreen() {
-    // BlocProvider.of<HomeBloc>(navigatorKey.currentContext!).add(FetchDataEvent());
+  void loadHomeScreen() {
     Navigator.pushAndRemoveUntil(
         navigatorKey.currentContext!,
         MaterialPageRoute(
@@ -56,7 +48,7 @@ class SplashBloc extends Bloc<SplashEvents, SplashStates> {
         (Route<dynamic> route) => false);
   }
 
-  loadSignInScreen() {
+  void loadSignInScreen() {
     Navigator.pushAndRemoveUntil(
         navigatorKey.currentContext!,
         MaterialPageRoute(

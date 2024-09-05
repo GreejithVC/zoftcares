@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zoftcares/constants/app_strings.dart';
 import 'package:zoftcares/controllers/auth/auth_event.dart';
-import 'package:zoftcares/controllers/post/post_event.dart';
 import 'package:zoftcares/controllers/post/post_state.dart';
 import 'package:zoftcares/ui/components/post_tile.dart';
 
@@ -14,7 +13,6 @@ import '../../constants/enums.dart';
 import '../../controllers/auth/auth_bloc.dart';
 import '../../controllers/post/post_bloc.dart';
 import '../../main.dart';
-import '../../models/post_model.dart';
 import '../../utils/widget_utils.dart';
 import '../components/shimmer_tile.dart';
 
@@ -26,13 +24,8 @@ class PostListScreen extends StatefulWidget {
 }
 
 class _PostListScreenState extends State<PostListScreen> {
-  final PostBloc controller = BlocProvider.of<PostBloc>(navigatorKey.currentContext!);
-
-  @override
-  void initState() {
-    super.initState();
-    controller.initList();
-  }
+  final PostBloc controller =
+      BlocProvider.of<PostBloc>(navigatorKey.currentContext!);
 
   @override
   Widget build(final BuildContext context) {
@@ -50,14 +43,13 @@ class _PostListScreenState extends State<PostListScreen> {
                   icon: const Icon(Icons.logout))
             ],
           ),
-          body: BlocSelector<PostBloc, PostStates,
-                  Tuple2<PageState, List<PostModel>>>(
+          body: BlocSelector<PostBloc, PostStates, Tuple2<PageState, int>>(
               selector: (PostStates state) =>
                   Tuple2(state.pageState, state.posts),
-              builder: (context, Tuple2<PageState, List<PostModel>> data) {
+              builder: (context, Tuple2<PageState, int> data) {
                 if (data.item1 == PageState.loading) {
                   return _loadingView();
-                } else if (data.item2.isNotEmpty) {
+                } else if (data.item2 > 0) {
                   return _postsListView();
                 } else {
                   return _errorView();
@@ -76,7 +68,8 @@ class _PostListScreenState extends State<PostListScreen> {
         itemCount: controller.posts.length,
         itemBuilder: (final context, final index) {
           return PostTile(
-              postModel: controller.posts[index],);
+            postModel: controller.posts[index],
+          );
         },
         separatorBuilder: (final context, final index) {
           return const SizedBox(height: 12);

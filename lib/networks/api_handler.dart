@@ -16,13 +16,6 @@ class ApiHandler {
     if (isAuthApi) headers = await getHeaders();
     final uri = Uri.parse('${ApiUrls.baseUrl}$url');
     final response = await http.get(uri, headers: headers);
-    print("urllll -- $uri");
-    print("authToken");
-    print(authToken);
-    print("isAuthApi");
-    print(isAuthApi);
-    print(headers);
-    print("headers");
     final responseJson = _response(response);
     return responseJson;
   }
@@ -38,10 +31,6 @@ class ApiHandler {
   }
 
   dynamic _response(final http.Response? response) {
-    print(response);
-    print(DateTime.now());
-    print("response?.body");
-    print(response?.body);
     if ((response?.statusCode == 200 || response?.statusCode == 201) &&
         response?.body != null) {
       return json.decode(response!.body);

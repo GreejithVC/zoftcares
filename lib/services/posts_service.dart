@@ -6,8 +6,8 @@ class PostsService {
   ApiHandler apiHandler = ApiHandler();
 
   Future<PostListModel> fetchPosts(int page) async {
-    final response = await apiHandler.get(
-        url: "${ApiUrls.posts}?page=$page&size=10");
+    final response =
+        await apiHandler.get(url: "${ApiUrls.posts}?page=$page&size=10");
     return PostListModel.fromJson(response);
   }
 }

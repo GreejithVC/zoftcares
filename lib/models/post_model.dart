@@ -71,7 +71,6 @@ class PostModel {
     this.image,
   });
 
-  // Factory constructor to create a PostModel from JSON
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
       id: json['id'],
@@ -81,7 +80,6 @@ class PostModel {
     );
   }
 
-  // Method to convert PostModel to JSON
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
