@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/app_colors.dart';
 import '../../constants/enums.dart';
-import '../../controllers/app_controller.dart';
-import '../../main.dart';
+import '../../controllers/splash/splash_bloc.dart';
+import '../../controllers/splash/splash_event.dart';
+import '../../controllers/splash/splash_state.dart';
 import '../../utils/widget_utils.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,13 +16,10 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final AppController _appProvider =
-      Provider.of<AppController>(navigatorKey.currentContext!, listen: false);
-
   @override
   void initState() {
     super.initState();
-    _appProvider.fetchAppDetails(context);
+    BlocProvider.of<SplashBloc>(context).add(StartTimerEvent());
   }
 
   @override
@@ -32,9 +30,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Widget _buildBodyWidget(BuildContext context) {
-    return Selector<AppController, PageState>(
-        selector: (buildContext, controller) => controller.pageState,
-        builder: (context, data, child) {
+    return BlocSelector<SplashBloc, SplashStates, PageState>(
+        selector: (SplashStates state) => state.pageState,
+        builder: (context, PageState data) {
           return data == PageState.error
               ? WidgetUtils.errorWidget("Something went wrong",
                   color: AppColors.textBlackColor)
