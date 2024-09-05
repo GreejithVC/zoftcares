@@ -36,14 +36,14 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cached_network_image: ^3.4.1
   cupertino_icons: ^1.0.8
+  flutter_bloc: ^8.1.6
   google_fonts: ^6.2.1
   http: ^1.2.2
   loadmore: ^2.1.0
-  provider: ^6.1.2
   shared_preferences: ^2.3.2
   shimmer: ^3.0.0
   tuple: ^2.0.2
-  flutter_bloc: ^8.1.6
+
 
 
 dev_dependencies:
