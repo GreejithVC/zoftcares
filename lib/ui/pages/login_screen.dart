@@ -7,14 +7,18 @@ import '../../controllers/auth_controller.dart';
 import '../../main.dart';
 import '../../utils/widget_utils.dart';
 import '../../utils/widgets/app_button.dart';
-import '../../constants/app_colors.dart';
 import '../../constants/app_strings.dart';
 import '../../utils/widgets/app_textformfield.dart';
 import '../../constants/app_theme.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final AuthController controller =
       Provider.of<AuthController>(navigatorKey.currentContext!, listen: false);
 
@@ -68,6 +72,7 @@ class LoginScreen extends StatelessWidget {
       style: appTheme.textTheme.headlineMedium,
     );
   }
+
   Widget _versionView() {
     return Selector<AuthController, String?>(
         selector: (buildContext, controller) => controller.appVersion,
@@ -110,5 +115,4 @@ class LoginScreen extends StatelessWidget {
               });
         });
   }
-
 }

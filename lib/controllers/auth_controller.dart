@@ -17,6 +17,7 @@ class AuthController with ChangeNotifier {
   final TextEditingController passwordController = TextEditingController();
   String? error;
   String? appVersion;
+  Timer? _sessionTimer;
 
   PageState _pageState = PageState.loading;
 
@@ -66,6 +67,8 @@ class AuthController with ChangeNotifier {
       final AuthModel authResponse = await AuthService().login(
           email: emailController.text, password: passwordController.text);
       if (authResponse.status == true) {
+        startSessionTimer(authResponse.data!.validity!);
+
         loadHomeScreen(loginModel: authResponse.data!);
       } else {
         WidgetUtils.showSnackBar(authResponse.error);
@@ -86,6 +89,7 @@ class AuthController with ChangeNotifier {
   Future<void> signOut() async {
     await SharedPreferenceRepository.setToken("");
     loadLoginScreen();
+    stopSessionTimer();
   }
 
   loadHomeScreen({required LoginModel loginModel}) async {
@@ -105,4 +109,36 @@ class AuthController with ChangeNotifier {
         ),
         (Route<dynamic> route) => false);
   }
+
+
+  void startSessionTimer(int tokenValidity) {
+    if (_sessionTimer != null) {
+      _sessionTimer!.cancel();
+    }
+debugPrint("tokenValidity -- $tokenValidity");
+    _sessionTimer = Timer(Duration(milliseconds: tokenValidity), () {
+      _handleSessionExpiry();
+    });
+  }
+
+
+  void _handleSessionExpiry() {
+    signOut();
+    _showSessionExpiredNotification();
+  }
+
+
+
+
+  void _showSessionExpiredNotification() {
+    debugPrint("_showSessionExpiredNotification -- ");
+    WidgetUtils.showSnackBar('Your session has expired. Please log in again.');
+  }
+
+  void stopSessionTimer() {
+    if (_sessionTimer != null) {
+      _sessionTimer!.cancel();
+    }
+  }
+
 }
