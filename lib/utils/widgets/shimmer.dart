@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ShimmerSquare extends StatelessWidget {
-  const ShimmerSquare({super.key, required this.size});
+  const ShimmerSquare({super.key, required this.height});
 
-  final double size;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +15,7 @@ class ShimmerSquare extends StatelessWidget {
       loop: 3,
       child: ColoredBox(
         color: Colors.white,
-        child: SizedBox(
-          height: size * 1,
-          width: size * 1,
-        ),
+        child: SizedBox(height: height, width: double.infinity),
       ),
     );
   }

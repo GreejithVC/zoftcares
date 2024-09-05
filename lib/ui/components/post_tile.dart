@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zoftcares/main.dart';
 import 'package:zoftcares/models/post_model.dart';
-import 'package:zoftcares/ui/components/post_description.dart';
 import 'package:zoftcares/ui/components/post_image.dart';
 
 class PostTile extends StatelessWidget {
@@ -11,21 +10,38 @@ class PostTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  _postDetails();
+    return _postDetails();
   }
 
   Widget _postDetails() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        PostImage(
-            url: postModel.image,
-            size: MediaQuery.of(navigatorKey.currentContext!).size.width - 16),
-        SizedBox(height: 10),
-        PostDescription(postModel: postModel,),
-        SizedBox(height: 10),
-        Divider(height: 1,color: Colors.grey,)
-      ],
+    return Card(
+      color: Colors.white,
+      clipBehavior: Clip.antiAlias,
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PostImage(url: "${postModel.image}.jpeg"),
+            SizedBox(height: 10),
+            Text(
+              postModel.title ?? "",
+              style:
+                  Theme.of(navigatorKey.currentContext!).textTheme.labelMedium!,
+              textAlign: TextAlign.justify,
+            ),
+            SizedBox(height: 10),
+            Text(
+              postModel.body ?? "",
+              style:
+                  Theme.of(navigatorKey.currentContext!).textTheme.bodyMedium!,
+              textAlign: TextAlign.justify,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

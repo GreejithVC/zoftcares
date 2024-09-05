@@ -7,44 +7,28 @@ class ShimmerTile extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return ListTile(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      titleAlignment: ListTileTitleAlignment.titleHeight,
-      tileColor: AppColors.tileColor,
-      leading: _leadingIconView(),
-      minVerticalPadding: 10,
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _textView(),
-          const SizedBox(height: 4),
-          _textView(),
-          const SizedBox(height: 4),
-          _textView(),
-          const SizedBox(height: 4),
-          _textView(),
-          const SizedBox(height: 4),
-          _textView(),
-          const SizedBox(height: 4),
-          _textView(),
-          const SizedBox(height: 4),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _itemView(height: 200),
+        SizedBox(height: 10),
+        _itemView(),
+        SizedBox(height: 5),
+        _itemView(),
+        SizedBox(height: 10),
+        _itemView(),
+        SizedBox(height: 5),
+        _itemView(),
+        SizedBox(height: 10),
+      ],
     );
   }
 
-  Widget _leadingIconView() {
-    return const CircleAvatar(
-      radius: 23,
-      backgroundColor: AppColors.greyColor,
-    );
-  }
-
-  Widget _textView() {
-    return const ColoredBox(
+  Widget _itemView({double? height}) {
+    return ColoredBox(
       color: AppColors.greyColor,
-      child: SizedBox(height: 6),
+      child: SizedBox(height: height ?? 6, width: double.infinity),
     );
   }
 }
