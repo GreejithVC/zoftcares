@@ -7,6 +7,7 @@ import 'package:zoftcares/services/auth_service.dart';
 import '../constants/enums.dart';
 import '../main.dart';
 import '../models/auth_model.dart';
+import '../networks/api_handler.dart';
 import '../repo/shared_preference_repository.dart';
 import '../ui/pages/post_list_screen.dart';
 import '../ui/pages/login_screen.dart';
@@ -60,7 +61,6 @@ class AuthController with ChangeNotifier {
     }
   }
 
-
   Future<void> signIn() async {
     pageState = PageState.loading;
     try {
@@ -93,6 +93,7 @@ class AuthController with ChangeNotifier {
   }
 
   loadHomeScreen({required LoginModel loginModel}) async {
+    authToken = loginModel.accessToken;
     await SharedPreferenceRepository.setToken(loginModel.accessToken!);
     Navigator.pushReplacement(
       navigatorKey.currentContext!,
@@ -110,27 +111,23 @@ class AuthController with ChangeNotifier {
         (Route<dynamic> route) => false);
   }
 
-
   void startSessionTimer(int tokenValidity) {
     if (_sessionTimer != null) {
       _sessionTimer!.cancel();
     }
-debugPrint("tokenValidity -- $tokenValidity");
+    debugPrint("tokenValidity -- $tokenValidity");
     _sessionTimer = Timer(Duration(milliseconds: tokenValidity), () {
       _handleSessionExpiry();
     });
   }
-
 
   void _handleSessionExpiry() {
     signOut();
     _showSessionExpiredNotification();
   }
 
-
-
-
   void _showSessionExpiredNotification() {
+    print(DateTime.now());
     debugPrint("_showSessionExpiredNotification -- ");
     WidgetUtils.showSnackBar('Your session has expired. Please log in again.');
   }
@@ -140,5 +137,4 @@ debugPrint("tokenValidity -- $tokenValidity");
       _sessionTimer!.cancel();
     }
   }
-
 }
