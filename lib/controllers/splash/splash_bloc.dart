@@ -12,7 +12,9 @@ import '../../ui/pages/login_screen.dart';
 import '../../ui/pages/post_list_screen.dart';
 
 class SplashBloc extends Bloc<SplashEvents, SplashStates> {
-  SplashBloc() : super(SplashStates(pageState: PageState.initial));
+  SplashBloc() : super(SplashStates(pageState: PageState.initial)) {
+    startTimer();
+  }
 
   @override
   Stream<SplashStates> mapEventToState(SplashEvents event) async* {

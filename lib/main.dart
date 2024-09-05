@@ -1,12 +1,13 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zoftcares/controllers/post/post_bloc.dart';
 import 'package:zoftcares/ui/pages/splash_screen.dart';
 
 import 'constants/app_theme.dart';
-import 'controllers/app_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'controllers/auth_controller.dart';
-import 'controllers/post_controller.dart';
+import 'controllers/auth/auth_bloc.dart';
+import 'controllers/splash/splash_bloc.dart';
 
 
 
@@ -21,11 +22,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(create: (final _) => AppController()),
-        ChangeNotifierProvider(create: (final _) => AuthController()),
-        ChangeNotifierProvider(create: (final _) => PostController()),
+        BlocProvider<SplashBloc>(create: (BuildContext context) => SplashBloc()),
+        BlocProvider<AuthBloc>(create: (BuildContext context) => AuthBloc()),
+        BlocProvider<PostBloc>(create: (BuildContext context) => PostBloc()),
       ],
       child: MaterialApp(
         navigatorKey:navigatorKey ,

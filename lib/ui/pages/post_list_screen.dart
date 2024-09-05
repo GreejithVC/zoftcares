@@ -1,19 +1,21 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loadmore/loadmore.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zoftcares/constants/app_strings.dart';
+import 'package:zoftcares/controllers/auth/auth_event.dart';
+import 'package:zoftcares/controllers/post/post_event.dart';
+import 'package:zoftcares/controllers/post/post_state.dart';
 import 'package:zoftcares/ui/components/post_tile.dart';
 
 import '../../constants/app_colors.dart';
-import '../../controllers/auth_controller.dart';
-import '../../controllers/post_controller.dart';
 import '../../constants/enums.dart';
+import '../../controllers/auth/auth_bloc.dart';
+import '../../controllers/post/post_bloc.dart';
 import '../../main.dart';
 import '../../models/post_model.dart';
 import '../../utils/widget_utils.dart';
-import '../components/post_image.dart';
 import '../components/shimmer_tile.dart';
 
 class PostListScreen extends StatefulWidget {
@@ -24,11 +26,7 @@ class PostListScreen extends StatefulWidget {
 }
 
 class _PostListScreenState extends State<PostListScreen> {
-  final PostController controller = Provider.of<PostController>(
-      navigatorKey.currentContext!,
-      listen: false);
-  final AuthController authController =
-      Provider.of<AuthController>(navigatorKey.currentContext!, listen: false);
+  final PostBloc controller = BlocProvider.of<PostBloc>(navigatorKey.currentContext!);
 
   @override
   void initState() {
@@ -41,33 +39,30 @@ class _PostListScreenState extends State<PostListScreen> {
     return WillPopScope(
       onWillPop: () => WidgetUtils.showExitPopUp(context),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text(AppStrings.appName),
-          centerTitle: true,
-          actions: [
-            IconButton(
-                onPressed: authController.logoutAlertBox,
-                icon: const Icon(Icons.logout))
-          ],
-        ),
-        body: Selector<PostController, Tuple2<PageState, List<PostModel>>>(
-          selector: (final context, final controller) =>
-              Tuple2(controller.pageState, controller.posts),
-          shouldRebuild: (Tuple2<PageState, List<PostModel>> before,
-              Tuple2<PageState, List<PostModel>> after) {
-            return true;
-          },
-          builder: (final context, final data, final child) {
-            if (data.item1 == PageState.loading) {
-              return _loadingView();
-            } else if (data.item2.isNotEmpty) {
-              return _postsListView();
-            } else {
-              return _errorView();
-            }
-          },
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text(AppStrings.appName),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    BlocProvider.of<AuthBloc>(context).add(LogoutEvent());
+                  },
+                  icon: const Icon(Icons.logout))
+            ],
+          ),
+          body: BlocSelector<PostBloc, PostStates,
+                  Tuple2<PageState, List<PostModel>>>(
+              selector: (PostStates state) =>
+                  Tuple2(state.pageState, state.posts),
+              builder: (context, Tuple2<PageState, List<PostModel>> data) {
+                if (data.item1 == PageState.loading) {
+                  return _loadingView();
+                } else if (data.item2.isNotEmpty) {
+                  return _postsListView();
+                } else {
+                  return _errorView();
+                }
+              })),
     );
   }
 
