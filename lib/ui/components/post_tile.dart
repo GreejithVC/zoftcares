@@ -18,29 +18,36 @@ class PostTile extends StatelessWidget {
       color: Colors.white,
       clipBehavior: Clip.antiAlias,
       elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PostImage(url: "${postModel.image}.jpeg"),
-            SizedBox(height: 10),
-            Text(
-              postModel.title ?? "",
-              style:
-                  Theme.of(navigatorKey.currentContext!).textTheme.labelMedium!,
-              textAlign: TextAlign.justify,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PostImage(url: "${postModel.image}.jpeg"),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  postModel.title ?? "",
+                  style: Theme.of(navigatorKey.currentContext!)
+                      .textTheme
+                      .labelMedium!,
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  postModel.body ?? "",
+                  style: Theme.of(navigatorKey.currentContext!)
+                      .textTheme
+                      .bodyMedium!,
+                  textAlign: TextAlign.justify,
+                ),
+              ],
             ),
-            SizedBox(height: 10),
-            Text(
-              postModel.body ?? "",
-              style:
-                  Theme.of(navigatorKey.currentContext!).textTheme.bodyMedium!,
-              textAlign: TextAlign.justify,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
