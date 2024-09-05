@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/app_validators.dart';
 import '../../constants/enums.dart';
-import '../../controllers/auth_controller.dart';
-import '../../main.dart';
+import '../../controllers/auth/auth_bloc.dart';
+import '../../controllers/auth/auth_event.dart';
+import '../../controllers/auth/auth_state.dart';
 import '../../utils/widget_utils.dart';
 import '../../utils/widgets/app_button.dart';
 import '../../constants/app_strings.dart';
@@ -19,10 +20,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final AuthController controller =
-      Provider.of<AuthController>(navigatorKey.currentContext!, listen: false);
-
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(final BuildContext context) {
@@ -45,7 +45,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Spacer(),
                     _titleView(),
                     const SizedBox(height: 20),
-
                     const Spacer(),
                     _emailView(),
                     const SizedBox(height: 16),
@@ -74,20 +73,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _versionView() {
-    return Selector<AuthController, String?>(
-        selector: (buildContext, controller) => controller.appVersion,
-        builder: (context, data, child) {
-        return Text(
-          "App Version - ${data ?? " "}",
-          style: appTheme.textTheme.bodySmall,
-        );
-      }
-    );
+    return BlocSelector<AuthBloc, AuthStates, String?>(
+        selector: (AuthStates state) => state.version,
+        builder: (context, String? data) {
+          return Text(
+            "App Version - ${data ?? " "}",
+            style: appTheme.textTheme.bodySmall,
+          );
+        });
   }
 
   Widget _emailView() {
     return AppTextFormField(
-      controller: controller.emailController,
+      controller: emailController,
       label: AppStrings.email,
       validator: AppValidators.email,
     );
@@ -95,22 +93,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _passwordView() {
     return AppTextFormField(
-      controller: controller.passwordController,
+      controller: passwordController,
       label: AppStrings.password,
       validator: AppValidators.password,
     );
   }
 
   Widget _buttonView() {
-    return Selector<AuthController, PageState>(
-        selector: (buildContext, controller) => controller.pageState,
-        builder: (context, data, child) {
+    return BlocSelector<AuthBloc, AuthStates, PageState>(
+        selector: (AuthStates state) => state.pageState,
+        builder: (context, PageState data) {
           return AppButton(
               title: AppStrings.login,
               isLoading: data == PageState.loading,
               onTap: () {
                 if (_formKey.currentState!.validate()) {
-                  controller.signIn();
+                  BlocProvider.of<AuthBloc>(context).add(LoginEvent(
+                      email: emailController.text,
+                      password: passwordController.text));
                 }
               });
         });
